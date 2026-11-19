@@ -11,7 +11,7 @@ Model: `qwen2.5-7b-16k` · 20 questions
 | Mean time in tools per question | 148 ms |
 | Mean tool calls per question | 1.6 |
 | Tokens (in / out) | 43,775 / 2,214 |
-| Cost of full run | $0.0079 |
+| Cost of full run | $0 (local model) |
 
 ## Accuracy by category
 
