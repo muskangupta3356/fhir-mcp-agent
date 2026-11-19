@@ -39,7 +39,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cp .env.example .env              # pick a model, see below
 
 docker compose up -d              # FHIR server on http://localhost:8080/fhir
-scripts/generate_patients.sh 75   # Synthea, about 1 minute
+bash scripts/generate_patients.sh 75   # Synthea, about 1 minute
 .venv/bin/python scripts/load_patients.py   # a few minutes
 ```
 
@@ -60,7 +60,7 @@ OPENAI_API_KEY=ollama
 AGENT_MODEL=qwen2.5-7b-16k
 ```
 
-GPT-4o-mini: remove `OPENAI_BASE_URL`, set a real `OPENAI_API_KEY` and `AGENT_MODEL=gpt-4o-mini`.
+GPT-4o-mini: set `OPENAI_BASE_URL=https://api.openai.com/v1`, a real `OPENAI_API_KEY` and `AGENT_MODEL=gpt-4o-mini`.
 
 ## Use it
 
