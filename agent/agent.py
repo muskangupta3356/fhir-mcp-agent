@@ -1,7 +1,8 @@
 """LLM agent that answers clinical questions by calling the FHIR MCP server's tools.
 
-The MCP server runs as a subprocess over stdio. The model (GPT-4o-mini by default)
-decides which tools to call. Every run is logged to logs/agent_runs.jsonl with each
+The MCP server runs as a subprocess over stdio. The model decides which tools to call:
+Qwen 2.5 7B through a local Ollama server by default, or GPT-4o-mini (or any
+OpenAI-compatible model) when configured in .env. Every run is logged to logs/agent_runs.jsonl with each
 tool call, its arguments, latency, and token usage.
 """
 import json
@@ -22,7 +23,10 @@ load_dotenv(ROOT / ".env")
 LOG = ROOT / "logs" / "agent_runs.jsonl"
 LOG.parent.mkdir(exist_ok=True)
 
-MODEL = os.environ.get("AGENT_MODEL", "gpt-4o-mini")
+MODEL = os.environ.get("AGENT_MODEL", "qwen2.5-7b-16k")
+# Defaults point at a local Ollama server; set both in .env to use OpenAI instead.
+BASE_URL = os.environ.get("OPENAI_BASE_URL", "http://localhost:11434/v1")
+API_KEY = os.environ.get("OPENAI_API_KEY", "ollama")
 MAX_STEPS = 10
 
 SYSTEM_PROMPT = """You are a clinical data assistant with read access to a FHIR server of \
@@ -42,7 +46,7 @@ match, say so and list them.
 class FhirAgent:
     def __init__(self, model: str = MODEL):
         self.model = model
-        self.llm = AsyncOpenAI()
+        self.llm = AsyncOpenAI(base_url=BASE_URL, api_key=API_KEY)
         self._stack = AsyncExitStack()
         self.session: ClientSession | None = None
         self.tools: list[dict] = []
