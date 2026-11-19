@@ -1,0 +1,6 @@
+.venv/
+.env
+__pycache__/
+tools/
+synthea_output/
+logs/
