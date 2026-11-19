@@ -1,0 +1,18 @@
+services:
+  fhir:
+    image: hapiproject/hapi:latest
+    container_name: hapi-fhir
+    ports:
+      - "8080:8080"
+    environment:
+      hapi.fhir.fhir_version: R4
+      # Synthea bundles reference Organizations/Practitioners by identifier;
+      # they are loaded first, but don't fail the whole bundle if one is missing.
+      hapi.fhir.enforce_referential_integrity_on_write: "false"
+      JAVA_TOOL_OPTIONS: "-Xmx3g"
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8080/fhir/metadata"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
